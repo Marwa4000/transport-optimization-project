@@ -1,15 +1,16 @@
 import { useLocation } from 'react-router-dom'
 
 const titles: Record<string, string> = {
-  '/': 'Optimization',
-  '/dashboard': 'Dashboard',
+  '/': 'Prediction',
+  '/assignment': 'Assignment',
   '/results': 'Results',
-  '/about': 'About Model',
+  '/dashboard': 'History',
+  '/about': 'About',
 }
 
 export default function Navbar() {
   const location = useLocation()
-  const title = titles[location.pathname] ?? 'Optimization'
+  const title = titles[location.pathname] ?? 'Prediction'
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',

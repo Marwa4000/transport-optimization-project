@@ -10,7 +10,7 @@ function worstCost(matrix: number[][]): number {
 
 export default function ResultsPage() {
   const navigate = useNavigate()
-  const raw = localStorage.getItem('lastOptimization')
+  const raw = localStorage.getItem('assignmentResult') || localStorage.getItem('lastOptimization')
   const result: OptimizationResult | null = raw ? JSON.parse(raw) : null
   const model = localStorage.getItem('lastModel') ?? 'random_forest'
 
@@ -18,10 +18,10 @@ export default function ResultsPage() {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <Sigma className="w-16 h-16 text-gray-300 mb-4" />
-        <p className="text-xl text-gray-500 font-medium">No results yet</p>
-        <p className="text-gray-400 text-sm mt-1">Run an optimization first.</p>
-        <button onClick={() => navigate('/')} className="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors">
-          Go to Optimization
+        <p className="text-xl text-gray-500 font-medium">No results</p>
+        <p className="text-gray-400 text-sm mt-1">Run a prediction or assignment first.</p>
+        <button onClick={() => navigate('/')} className="mt-4 px-6 py-2 bg-primary-600 text-white rounded-xl font-medium hover:bg-primary-700 transition-colors">
+          Go to Prediction
         </button>
       </div>
     )
@@ -35,7 +35,7 @@ export default function ResultsPage() {
   const totalSellers = matrixSellers.length
   const totalCustomers = matrixCustomers.length
   const totalPairs = totalSellers * totalCustomers
-  const worst = worstCost(cost_matrix)
+  const worst = worstCost(cost_matrix ?? [])
   const saved = worst - total_cost
 
   const chartData = assignments.map((a, i) => ({
@@ -51,7 +51,7 @@ export default function ResultsPage() {
     const blob = new Blob([header + rows], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
-    a.href = url; a.download = 'optimization_results.csv'; a.click()
+    a.href = url; a.download = 'assignment_results.csv'; a.click()
     URL.revokeObjectURL(url)
   }
 
@@ -60,6 +60,9 @@ export default function ResultsPage() {
     localStorage.removeItem('lastSellers')
     localStorage.removeItem('lastCustomers')
     localStorage.removeItem('lastModel')
+    localStorage.removeItem('costMatrix')
+    localStorage.removeItem('assignmentResult')
+    localStorage.removeItem('selectedAlgorithm')
     navigate('/')
   }
 
@@ -67,26 +70,26 @@ export default function ResultsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <h2 className="text-2xl font-bold text-gray-800">Optimization Results</h2>
-          <span className="ml-3 px-3 py-1 bg-indigo-100 text-indigo-700 text-sm font-medium rounded-full capitalize">
+          <h2 className="text-2xl font-bold text-gray-800">Assignment Results</h2>
+          <span className="ml-3 px-3 py-1 bg-primary-100 text-primary-700 text-sm font-medium rounded-full capitalize">
             {model.replace('_', ' ')}
           </span>
         </div>
         <div className="flex gap-3">
-          <button onClick={exportCSV} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition-colors">
+          <button onClick={exportCSV} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 rounded-xl transition-colors">
             <Download className="w-4 h-4" /> Export CSV
           </button>
-          <button onClick={newOptimization} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors">
-            <PlusCircle className="w-4 h-4" /> New Optimization
+          <button onClick={newOptimization} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-xl transition-colors">
+            <PlusCircle className="w-4 h-4" /> New Assignment
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard title="Total Sellers" value={totalSellers} icon={<Users className="w-6 h-6 text-white" />} color="bg-emerald-500" />
-        <StatCard title="Total Customers" value={totalCustomers} icon={<Users className="w-6 h-6 text-white" />} color="bg-blue-500" />
+        <StatCard title="Total Customers" value={totalCustomers} icon={<Users className="w-6 h-6 text-white" />} color="bg-primary-500" />
         <StatCard title="Pairs Evaluated" value={totalPairs} icon={<Sigma className="w-6 h-6 text-white" />} color="bg-purple-500" />
-        <StatCard title="Total Optimized Cost" value={`${total_cost.toFixed(2)} MAD`} icon={<DollarSign className="w-6 h-6 text-white" />} color="bg-indigo-500" />
+        <StatCard title="Total Optimized Cost" value={`${total_cost.toFixed(2)} MAD`} icon={<DollarSign className="w-6 h-6 text-white" />} color="bg-primary-500" />
         <StatCard title="Cost Saved vs Worst" value={`${saved.toFixed(2)} MAD`} icon={<TrendingDown className="w-6 h-6 text-white" />} color="bg-rose-500" />
       </div>
 
@@ -98,7 +101,7 @@ export default function ResultsPage() {
             <XAxis dataKey="name" />
             <YAxis unit=" MAD" />
             <Tooltip />
-            <Bar dataKey="cost" fill="#6366f1" radius={[6, 6, 0, 0]} />
+            <Bar dataKey="cost" fill="#16a34a" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -106,7 +109,7 @@ export default function ResultsPage() {
       {/* COST MATRIX */}
       {cost_matrix && cost_matrix.length > 0 && (
         <div className="bg-white rounded-xl shadow-md p-6 overflow-x-auto">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Cost Matrix — Predicted Freight per Pair (MAD)</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Cost matrix (MAD)</h3>
           <table className="w-full text-xs text-center divide-y divide-x border border-gray-200">
             <thead>
               <tr className="divide-x divide-gray-200">
@@ -126,7 +129,7 @@ export default function ResultsPage() {
                       <td
                         key={j}
                         className={`px-3 py-2 font-medium ${
-                          isSelected ? 'bg-emerald-100 text-emerald-800 font-bold' : 'bg-gray-50 text-gray-400'
+                          isSelected ? 'bg-primary-100 text-primary-800 font-bold' : 'bg-gray-50 text-gray-400'
                         }`}
                       >
                         {cost.toFixed(1)}

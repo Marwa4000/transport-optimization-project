@@ -24,7 +24,7 @@ export default function AboutModel() {
     <div className="max-w-3xl space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-gray-800">About the Model</h2>
-        <p className="text-gray-500">Machine learning model powering the predictions.</p>
+        <p className="text-gray-500">Machine learning model used for predictions.</p>
       </div>
 
       <div className="bg-white rounded-xl shadow-md p-6">
@@ -37,7 +37,7 @@ export default function AboutModel() {
                 <th className="px-4 py-3 font-medium">R²</th>
                 <th className="px-4 py-3 font-medium">MAE</th>
                 <th className="px-4 py-3 font-medium">RMSE</th>
-                <th className="px-4 py-3 font-medium">Best For</th>
+                <th className="px-4 py-3 font-medium">Best for</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -53,17 +53,17 @@ export default function AboutModel() {
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-gray-400 mt-3">Metrics will be updated after model training.</p>
+        <p className="text-xs text-gray-400 mt-3">Metrics will be updated after training.</p>
       </div>
 
       <div className="bg-white rounded-xl shadow-md p-6">
         <div className="flex items-center gap-2 mb-4">
-          <GitBranch className="w-5 h-5 text-indigo-600" />
-          <h3 className="text-lg font-semibold text-gray-800">Features Used</h3>
+          <GitBranch className="w-5 h-5 text-primary-600" />
+          <h3 className="text-lg font-semibold text-gray-800">Features</h3>
         </div>
         <div className="flex flex-wrap gap-2">
           {features.map((f) => (
-            <span key={f} className="px-3 py-1.5 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-lg">
+            <span key={f} className="px-3 py-1.5 bg-primary-50 text-primary-700 text-sm font-medium rounded-lg">
               {f}
             </span>
           ))}
@@ -72,38 +72,38 @@ export default function AboutModel() {
 
       <div className="bg-white rounded-xl shadow-md p-6">
         <div className="flex items-center gap-2 mb-4">
-          <Sigma className="w-5 h-5 text-indigo-600" />
+          <Sigma className="w-5 h-5 text-primary-600" />
           <h3 className="text-lg font-semibold text-gray-800">Assignment Algorithm: Hungarian Method</h3>
         </div>
         <p className="text-gray-600 leading-relaxed mb-3">
-          The assignment of customers to sellers uses the <strong>Hungarian Algorithm</strong> (also known as the
-          Kuhn–Munkres algorithm), a combinatorial optimization method that solves the assignment problem in
-          polynomial time (<em>O(n³)</em>).
+          Customer-to-seller assignment uses the <strong>Hungarian Algorithm</strong> (also called
+          the Kuhn–Munkres algorithm), a combinatorial optimization method that solves the assignment
+          problem in polynomial time (<em>O(n³)</em>).
         </p>
         <p className="text-gray-600 leading-relaxed mb-3">
-          Given <em>n</em> sellers and <em>m</em> customers, the algorithm constructs a cost matrix where each entry
-          represents the predicted freight cost of assigning a customer to a seller. It then finds the minimum-cost
-          matching that assigns each customer to exactly one seller while minimizing the total cost.
+          Given <em>n</em> sellers and <em>m</em> customers, the algorithm builds a cost matrix
+          where each entry represents the predicted transport cost of assigning a customer to a
+          seller. It then finds the minimum-cost assignment.
         </p>
         <ul className="list-disc list-inside text-gray-600 space-y-1 text-sm">
-          <li>Step 1: Subtract the smallest cost in each row from all entries in that row.</li>
-          <li>Step 2: Subtract the smallest cost in each column from all entries in that column.</li>
-          <li>Step 3: Cover all zeros with the minimum number of lines.</li>
-          <li>Step 4: If the number of lines equals <em>n</em>, an optimal assignment is found.</li>
-          <li>Step 5: Otherwise, adjust the matrix and repeat from Step 3.</li>
+          <li>Step 1: Subtract the minimum cost from each row.</li>
+          <li>Step 2: Subtract the minimum cost from each column.</li>
+          <li>Step 3: Cover all zeros with a minimum number of lines.</li>
+          <li>Step 4: If the number of lines = <em>n</em>, an optimal assignment is found.</li>
+          <li>Step 5: Otherwise, adjust the matrix and repeat.</li>
         </ul>
       </div>
 
       <div className="bg-white rounded-xl shadow-md p-6 space-y-3">
         <h3 className="text-lg font-semibold text-gray-800">About the Project</h3>
         <p className="text-gray-600 leading-relaxed">
-          This project is part of a <strong>Projet de Fin d'Études (PFA)</strong> focused on optimizing transport logistics
-          through machine learning. The XGBoost Regressor model predicts freight costs based on shipment characteristics
-          such as seller and customer locations, product price, delivery time, and distance.
+          This project is part of a <strong>Final Year Project (PFA)</strong> focused on transport logistics
+          optimization through machine learning. The XGBoost Regressor model predicts freight costs
+          based on shipment characteristics.
         </p>
         <p className="text-gray-600 leading-relaxed">
-          By providing accurate cost estimates, this tool helps businesses and logistics providers make informed
-          decisions, reduce operational expenses, and improve route planning across Morocco.
+          By providing accurate cost estimates, this tool helps businesses and logistics providers
+          make informed decisions, reduce operational expenses, and improve route planning.
         </p>
       </div>
     </div>
